@@ -1,5 +1,6 @@
 package com.as.wikiimagesearch;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -10,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -36,12 +38,13 @@ public class MainActivityFragment extends Fragment implements Response.Listener,
         Response.ErrorListener {
 
     private static final String REQUEST_TAG = "WikiImageRequest";
-    private final String WIKI_API_URL = "https://en.wikipedia.org/w/api.php?action=query&prop=pageimages&format=json&piprop=thumbnail&pithumbsize=100&pilimit=50&generator=prefixsearch&gpssearch=";
+    private final String WIKI_API_URL = "https://en.wikipedia.org/w/api.php?action=query&prop=pageimages&format=json&piprop=thumbnail&pithumbsize=50&pilimit=50&generator=prefixsearch&gpssearch=";
     private RequestQueue mQueue;
 
     private RecyclerView mRecyclerView;
     private RecyclerViewAdapter mAdapter;
     private RecyclerView.LayoutManager mLocationsLayoutManager;
+private EditText searchEditText;
 
     List<WikiPageEntity> mWikiPageList;
 
@@ -121,8 +124,8 @@ public class MainActivityFragment extends Fragment implements Response.Listener,
 
     private void initView(View view) {
 
-        EditText editText = (EditText) view.findViewById(R.id.editText);
-        editText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+        searchEditText = (EditText) view.findViewById(R.id.editText);
+        searchEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_SEARCH) {
@@ -134,7 +137,7 @@ public class MainActivityFragment extends Fragment implements Response.Listener,
         });
 
         mRecyclerView = (RecyclerView) view.findViewById(R.id.recyclerView);
-        mRecyclerView.setHasFixedSize(true);
+       // mRecyclerView.setHasFixedSize(true);
 
         mLocationsLayoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView.setLayoutManager(mLocationsLayoutManager);
@@ -149,6 +152,10 @@ public class MainActivityFragment extends Fragment implements Response.Listener,
 
     private void performSearch(String query) {
         Toast.makeText(getContext(), "Searching... " + query, Toast.LENGTH_LONG).show();
+
+        searchEditText.clearFocus();
+        InputMethodManager in = (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+        in.hideSoftInputFromWindow(searchEditText.getWindowToken(), 0);
 
         final WikiJsonObjectRequest jsonRequest = new WikiJsonObjectRequest(Request.Method
                 .GET, WIKI_API_URL + query,

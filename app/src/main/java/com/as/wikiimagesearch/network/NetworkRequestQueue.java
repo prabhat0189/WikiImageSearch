@@ -33,7 +33,7 @@ public class NetworkRequestQueue {
 
     public RequestQueue getRequestQueue() {
         if (mRequestQueue == null) {
-            Cache cache = new DiskBasedCache(mCtx.getCacheDir(), 10 * 1024 * 1024);
+            Cache cache = new DiskBasedCache(mCtx.getCacheDir(), 100 * 1024 * 1024);
             Network network = new BasicNetwork(new HurlStack());
             mRequestQueue = new RequestQueue(cache, network);
             // Don't forget to start the volley request queue

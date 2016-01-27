@@ -70,14 +70,16 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     public void onBindViewHolder(ViewHolder holder, int position) {
         holder.mTextView.setText(mWikiPageList.get(position).getTitle());
 
+        holder.mNetworkImageView.setImageBitmap(null);
         //Image URL -
         Thumbnail thumbnail = mWikiPageList.get(position).getThumbnail();
         if(thumbnail != null) {
             String imageURL = thumbnail.getSource();
-            mImageLoader.get(imageURL, ImageLoader.getImageListener(holder.mNetworkImageView,
-                    R.mipmap.ic_launcher, android.R.drawable
-                            .ic_dialog_alert));
-            holder.mNetworkImageView.setImageUrl(imageURL, mImageLoader);
+                mImageLoader.get(imageURL, ImageLoader.getImageListener(holder.mNetworkImageView,
+                        R.mipmap.ic_launcher, R.drawable.not_available));
+                holder.mNetworkImageView.setImageUrl(imageURL, mImageLoader);
+        } else {
+            holder.mNetworkImageView.setDefaultImageResId(R.drawable.not_available);
         }
     }
 

@@ -31,7 +31,7 @@ public class ImageLoadingRequestQueue {
         mImageLoader = new ImageLoader(mRequestQueue,
                 new ImageLoader.ImageCache() {
                     private final LruCache<String, Bitmap>
-                            cache = new LruCache<String, Bitmap>(20);
+                            cache = new LruCache<String, Bitmap>(50);
 
                     @Override
                     public Bitmap getBitmap(String url) {
@@ -54,7 +54,7 @@ public class ImageLoadingRequestQueue {
 
     public RequestQueue getRequestQueue() {
         if (mRequestQueue == null) {
-            Cache cache = new DiskBasedCache(mCtx.getCacheDir(), 50 * 1024 * 1024);
+            Cache cache = new DiskBasedCache(mCtx.getCacheDir(), 100 * 1024 * 1024);
             Network network = new BasicNetwork(new HurlStack());
             mRequestQueue = new RequestQueue(cache, network);
             //start the volley request queue
