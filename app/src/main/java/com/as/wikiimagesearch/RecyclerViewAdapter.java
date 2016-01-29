@@ -5,11 +5,12 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.android.volley.toolbox.ImageLoader;
-import com.android.volley.toolbox.NetworkImageView;
 import com.as.wikiimagesearch.network.ImageLoadingRequestQueue;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -26,12 +27,12 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             implements View.OnClickListener {
 
         public TextView mTextView;
-        public NetworkImageView mNetworkImageView;
+        public ImageView mImageView;
 
         public ViewHolder(View v) {
             super(v);
             mTextView = (TextView)v.findViewById(R.id.textView);
-            mNetworkImageView = (NetworkImageView)v.findViewById(R.id.networkImageView);
+            mImageView = (ImageView)v.findViewById(R.id.imageView);
             v.setOnClickListener(this);
         }
 
@@ -70,16 +71,18 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     public void onBindViewHolder(ViewHolder holder, int position) {
         holder.mTextView.setText(mWikiPageList.get(position).getTitle());
 
-        holder.mNetworkImageView.setImageBitmap(null);
+        holder.mImageView.setImageBitmap(null);
         //Image URL -
         Thumbnail thumbnail = mWikiPageList.get(position).getThumbnail();
         if(thumbnail != null) {
             String imageURL = thumbnail.getSource();
-                mImageLoader.get(imageURL, ImageLoader.getImageListener(holder.mNetworkImageView,
-                        R.mipmap.ic_launcher, R.drawable.not_available));
-                holder.mNetworkImageView.setImageUrl(imageURL, mImageLoader);
+            Picasso.with(mContext)
+                    .load(imageURL)
+                    .placeholder(R.drawable.placeholder)
+                    .error(R.drawable.not_available)
+                    .into(holder.mImageView);
         } else {
-            holder.mNetworkImageView.setDefaultImageResId(R.drawable.not_available);
+            holder.mImageView.setImageResource(R.drawable.not_available);
         }
     }
 
